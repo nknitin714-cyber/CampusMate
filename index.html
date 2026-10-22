@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusMate - Student Assistant</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f1f5ff;
+            color: #24324a;
+        }
+
+        header {
+            background: #2457d6;
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        main {
+            max-width: 850px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+
+        .welcome {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            border-radius: 14px;
+        }
+
+        button {
+            background: #2457d6;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 7px;
+            cursor: pointer;
+        }
+
+        #result {
+            background: white;
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        @media (max-width: 600px) {
+            .cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#2563eb">
+</head>
+
+<body>
+
+    <header>
+        <h1>🎓 CampusMate</h1>
+        <p>Your Smart Student Assistant</p>
+    </header>
+
+    <main>
+        <section class="welcome">
+            <h2>Welcome, Student! 👋</h2>
+            <p>Manage your college life in one place.</p>
+            <p id="date"></p>
+        </section>
+
+        <section class="cards">
+
+            <div class="card">
+                <h3>📅 My Timetable</h3>
+                <p>Manage your daily classes.</p>
+                <button onclick="showMessage('Your timetable will appear here.')">
+                    Open Timetable
+                </button>
+                <button onclick="showTimetable()">
+    Open Timetable
+</button>
+            </div>
+
+            <div class="card">
+                <h3>📝 Assignments</h3>
+                <p>Keep track of your assignments.</p>
+                <button onclick="showAssignments()">
+                    Open Assignments
+                </button>
+            </div>
+
+            <div class="card">
+                <h3>📢 College Notices</h3>
+                <p>Check important announcements.</p>
+                <button onclick="showNotices()">
+                    Open Notices
+                </button>
+            </div>
+
+            <div class="card">
+                <h3>🤖 Study Assistant</h3>
+                <p>Organize your study time.</p>
+                <button onclick="showAssistant()">
+    Open Assistant
+</button>
+                    Open Assistant
+                </button>
+            </div>
+
+        </section>
+
+        <section id="result">
+            <h3>Welcome to CampusMate!</h3>
+            <p>Select any option above to get started.</p>
+        </section>
+    </main>
+
+    <script>
+        document.getElementById("date").textContent =
+            "Today's date: " + new Date().toLocaleDateString();
+
+        function showMessage(message) {
+            document.getElementById("result").innerHTML =
+                "<h3>CampusMate</h3><p>" + message + "</p>";
+        }
+        function showTimetable() {
+    document.getElementById("result").innerHTML = `
+        <h3>📅 My Timetable</h3>
+
+        <label>Subject:</label><br>
+        <input id="subject" placeholder="e.g. C++ Programming"><br><br>
+
+        <label>Class Time:</label><br>
+        <input id="classTime" type="time"><br><br>
+
+        <button onclick="addClass()">Add Class</button>
+
+        <div id="classList"></div>
+    `;
+    loadClasses();
+}
+
+function addClass() {
+    const subject = document.getElementById("subject").value.trim();
+    const time = document.getElementById("classTime").value;
+
+    if (!subject || !time) {
+        alert("Please enter both subject and time!");
+        return;
+    }
+
+    const list = document.getElementById("classList");
+    const item = document.createElement("p");
+
+    item.textContent = subject + " — " + time;
+    list.appendChild(item);
+    saveClasses();
+
+    document.getElementById("subject").value = "";
+    document.getElementById("classTime").value = "";
+}
+function showAssignments() {
+    document.getElementById("result").innerHTML = `
+        <h3>📝 My Assignments</h3>
+        <label>Assignment Name:</label><br>
+        <input id="assignmentName" placeholder="Enter assignment name"><br><br>
+        <label>Submission Date:</label><br>
+        <input id="submissionDate" type="date"><br><br>
+        <button onclick="addAssignment()">Add Assignment</button>
+        <div id="assignmentList"></div>
+    `;
+    loadAssignments();
+}
+
+function addAssignment() {
+    const name = document.getElementById("assignmentName").value.trim();
+    const date = document.getElementById("submissionDate").value;
+
+    if (name === "" || date === "") {
+        alert("Please enter assignment name and date!");
+        return;
+    }
+
+    const assignments = JSON.parse(localStorage.getItem("campusMateAssignments") || "[]");
+    assignments.push({ name: name, date: date });
+    localStorage.setItem("campusMateAssignments", JSON.stringify(assignments));
+
+    const item = document.createElement("p");
+    item.textContent = name + " — Due: " + date;
+    document.getElementById("assignmentList").appendChild(item);
+
+    document.getElementById("assignmentName").value = "";
+    document.getElementById("submissionDate").value = "";
+}
+function showNotices() {
+    document.getElementById("result").innerHTML = `
+        <h3>📢 College Notices</h3>
+        <p>Welcome to the CampusMate Notice Board!</p>
+        <ul>
+            <li>Check your assignment submission dates.</li>
+            <li>Attend your classes on time.</li>
+            <li>Check with your college for upcoming events.</li>
+            </ul>
+            `;
+        }
+function showAssistant() {
+    document.getElementById("result").innerHTML = `
+        <h3>🤖 Study Assistant</h3>
+        <p>Enter your study subject:</p>
+        <input id="studySubject" placeholder="e.g. C++ Programming">
+        <button onclick="makeStudyPlan()">Create Study Plan</button>
+        <div id="studyPlan"></div>
+    `;
+}
+
+function makeStudyPlan() {
+    const subject = document.getElementById("studySubject").value.trim();
+
+    if (subject === "") {
+        alert("Please enter a subject!");
+        return;
+    }
+
+    document.getElementById("studyPlan").innerHTML =
+        "<p>📚 Study " + subject +
+        " for 30 minutes, revise notes for 15 minutes, and practise questions for 15 minutes.</p>";
+}
+function showAssistant() {
+    document.getElementById("result").innerHTML = `
+        <h3>🤖 Study Assistant</h3>
+        <p>Apna subject likho:</p>
+        <input id="studySubject" placeholder="e.g. C++ Programming">
+        <button onclick="makeStudyPlan()">Create Study Plan</button>
+        <div id="studyPlan"></div>
+    `;
+}
+
+function makeStudyPlan() {
+    const subject = document.getElementById("studySubject").value.trim();
+
+    if (subject === "") {
+        alert("Please enter a subject!");
+        return;
+    }
+
+    document.getElementById("studyPlan").innerHTML =
+        "<p>📚 Study " + subject +
+        " for 30 minutes, revise notes for 15 minutes, and practise questions for 15 minutes.</p>";
+}
+function saveClasses() {
+    const classes = document.getElementById("classList").innerText;
+    localStorage.setItem("campusMateClasses", classes);
+}
+function loadClasses() {
+    const savedClasses = localStorage.getItem("campusMateClasses");
+    const list = document.getElementById("classList");
+
+    if (savedClasses && list) {
+        list.innerText = savedClasses;
+    }
+}
+function loadAssignments() {
+    const assignments = JSON.parse(localStorage.getItem("campusMateAssignments") || "[]");
+    const list = document.getElementById("assignmentList");
+
+    if (!list) return;
+
+    list.innerHTML = "";
+
+    assignments.forEach(function(assignment) {
+        const item = document.createElement("p");
+        item.textContent = assignment.name + " — Due: " + assignment.date;
+        list.appendChild(item);
+    });
+}
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+        navigator.serviceWorker.register("./sw.js")
+            .then(function () {
+                console.log("CampusMate ready!");
+            })
+            .catch(function (error) {
+                console.log("Service worker error:", error);
+            });
+    });
+}
+</script>
+
+</body>
+</html
